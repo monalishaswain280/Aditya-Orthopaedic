@@ -1,0 +1,45 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Ensure the base directory is correctly set
+RewriteBase /
+
+# ==========================
+# Redirect index or index.php to domain root
+# ==========================
+RewriteCond %{THE_REQUEST} /index(?:\.php)? [NC]
+RewriteRule ^index(?:\.php)?$ / [L,R=301]
+
+# ==============================
+# Redirect /Blog/slug to Post.php?slug=slug
+# (Fixing your blog URLs)
+# ==============================
+RewriteRule ^Blog/([^/]+)/?$ Post.php?slug=$1 [L,QSA]
+
+# ==============================
+# Remove .php and .html extensions except in /Admin folder
+# ==============================
+
+# Skip rules for /Admin folder (Keep .php and .html extensions)
+RewriteCond %{REQUEST_URI} ^/Admin/ [NC]
+RewriteRule ^ - [L]
+
+# ======= Remove .php extension =======
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Redirect URLs with .php to clean URLs
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^.]+)\.php [NC]
+RewriteCond %{REQUEST_URI} !^/Admin/ [NC]
+RewriteRule ^ /%1 [L,R=301]
+
+# ======= Remove .html extension =======
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+# Redirect URLs with .html to clean URLs
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^.]+)\.html [NC]
+RewriteCond %{REQUEST_URI} !^/Admin/ [NC]
+RewriteRule ^ /%1 [L,R=301]
